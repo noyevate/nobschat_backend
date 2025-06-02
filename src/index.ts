@@ -6,4 +6,4 @@ const app = express()
 
 app.use(json())
 
-app.use('/auth', autRoutes)
+app.use('/auth', autRoutes);
