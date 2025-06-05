@@ -16,6 +16,7 @@ const UserSchema: Schema<IUser> = new mongoose.Schema(
     toJSON: {
       transform(_doc: any, ret: any) {
         delete ret.__v;
+        return ret;
       },
     },
     timestamps: true,

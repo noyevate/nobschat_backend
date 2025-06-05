@@ -29,31 +29,37 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const login = async (req: Request, res: Response): Promise<void>  => {
-  const {email, password} = req.body;
+export const login = async (req: Request, res: Response): Promise<void> => {
+  const { email, password } = req.body;
+
   try {
-    console.log("starting...")
-    const user = await User.findOne({email: email})
-    if(!user || !user.password) {
-      res.status(404).json({status: false, message: "User not found"})
-      console.log("starting2...")
-      return
-    } else{
-      console.log("starting3...")
-      const isPassValid = await bcrypt.compare(password, user.password);
-      if (!isPassValid) {
-        res.status(400).json({status: false, message: "wrong was password"})
-        return
-      }
-      console.log("starting4...")
-      const token = jwt.sign({ id: user._id}, JWT_SECRET, { expiresIn: '50d' });
-      const finalResult = {...user, token};
-      res.status(201).json({user: finalResult})
+    console.log("starting...");
+    const user = await User.findOne({ email: email });
+    if (!user || !user.password) {
+      res.status(404).json({ status: false, message: "User not found" });
+      return;
     }
 
-    
-    
+    const isPassValid = await bcrypt.compare(password, user.password);
+    if (!isPassValid) {
+      res.status(400).json({ status: false, message: "Wrong password" });
+      return;
+    }
+
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '50d' });
+
+    // ✅ Convert Mongoose document to plain object
+    const userObject = user.toObject();
+
+    // ✅ Remove sensitive fields
+    delete userObject.password;
+
+    // ✅ Add token
+    const finalResult = { ...userObject, token };
+
+    res.status(201).json({ user: finalResult });
   } catch (error) {
-    
+    res.status(500).json({ status: false, message: 'Server error', error });
   }
 };
+
