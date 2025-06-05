@@ -14,7 +14,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const hashPass = await bcrypt.hash(password, SALT_ROUNDS);
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      res.json({ status: false, message: 'Email already exists. Login instead.' });
+      res.status(400).json({ status: false, message: 'Email already exists. Login instead.' });
       return
     }
 
@@ -43,7 +43,8 @@ export const login = async (req: Request, res: Response): Promise<void>  => {
         return
       }
       const token = jwt.sign({ id: user._id}, JWT_SECRET, { expiresIn: '50d' });
-      res.status(201).json({token})
+      const finalResult = {...user, token};
+      res.status(201).json({user: finalResult})
     }
 
     
