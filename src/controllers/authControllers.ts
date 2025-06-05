@@ -21,7 +21,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const user = new User({ username, email, password: hashPass });
     await user.save();
 
-    res.status(201).json(user);
+    res.status(201).json({user});
     return
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", error });
@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response): Promise<void>  => {
         return
       }
       const token = jwt.sign({ id: user._id}, JWT_SECRET, { expiresIn: '50d' });
-      res.status(201).json(token)
+      res.status(201).json({token})
     }
 
     
