@@ -49,10 +49,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '50d' });
 
     // ✅ Convert Mongoose document to plain object
-    const userObject = user.toObject();
+    const userObject = user.toObject() as any;
 
     // ✅ Remove sensitive fields
     delete userObject.password;
+
+    delete userObject.__v;
 
     // ✅ Add token
     const finalResult = { ...userObject, token };
