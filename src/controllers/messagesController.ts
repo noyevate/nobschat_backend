@@ -50,7 +50,7 @@ export const getAllMessagesByConversationId = async (req: Request, res: Response
       .populate('sender_id', 'username') // Optional: get sender username
       .exec();
 
-    res.status(200).json({ status: true, messages });
+    res.status(200).json(messages);
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ status: false, message: 'Failed to fetch messages' });
