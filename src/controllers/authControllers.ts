@@ -59,10 +59,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // ✅ Add token
     const finalResult = { ...userObject, token };
 
-    console.log("JWT_SECRET used to sign/verify:", JWT_SECRET);
-console.log("Token from header:", token);
-
-
     res.status(201).json({ user: finalResult });
   } catch (error) {
     res.status(500).json({ status: false, message: 'Server error', error });
