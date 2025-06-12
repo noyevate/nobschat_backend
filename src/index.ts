@@ -64,7 +64,7 @@ app.use("/messages", messageRoutes);
 //     console.log("user disconnected", socket.id)
 //   })
 // })
-
+console.log('workinh')
 
 // Socket.IO connection handling
 io.on('connection', (socket) =>{ console.log('a user connected', socket.id);
