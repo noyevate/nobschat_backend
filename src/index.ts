@@ -67,27 +67,33 @@ app.use("/messages", messageRoutes);
 console.log('workinh')
 
 // Socket.IO connection handling
-io.on('connection', (socket) =>{ console.log('a user connected', socket.id);
- socket.on('joinCoversation', (conversationId) => { socket.join(conversationId); console.log("user joined conversation: ", conversationId);
-});
+io.on('connection', (socket) =>{
+  console.log('a user connected', socket.id)
 
- socket.on('sendMessage', async(message) => {
- const {conversation_id, sender_id, content} = message;
+  socket.on('joinCoversation', (conversationId) => {
+    socket.join(conversationId);
+    console.log("user joined conversation: ", conversationId)
+  })
 
- try {
- const savedMessage = await saveMessage(conversation_id, sender_id, content);
- console.log("SendMessage: ");
-  console.log(savedMessage);
- // Make sure you're emitting the actual saved message, not the function itself
- io.to(conversation_id).emit('newMessage', savedMessage); 
- } catch (error) {
- console.log(error); 
- }
- });
+  socket.on('sendMessage', async(message) => {
+    const {conversation_id, sender_id, content} = message;
 
- socket.on('disconnect', () => {
- console.log("user disconnected", socket.id); });
-});
+    try {
+      // CORRECTED LINE: Pass arguments in the correct order
+      const savedMessage = await saveMessage(sender_id, conversation_id, content);
+      console.log("SendMessage: ");
+      console.log(savedMessage);
+      io.to(conversation_id).emit('newMessage', savedMessage) // Ensure you emit savedMessage, not the function
+    } catch (error) {
+      console.log(error)
+    }
+
+  });
+
+  socket.on('disconnect', () => {
+    console.log("user disconnected", socket.id)
+  })
+})
 
 
 const PORT = process.env.PORT || 3500;
